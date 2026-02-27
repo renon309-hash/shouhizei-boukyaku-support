@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>消費税法 忘却サポートツール</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <h1>消費税法 忘却サポートツール</h1>
+      <div class="exam-countdown" id="examCountdown"></div>
+    </header>
+
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="today">今日のToDo</button>
+      <button class="tab-btn" data-tab="danger">やばいリスト</button>
+      <button class="tab-btn" data-tab="all">全理論一覧</button>
+      <button class="tab-btn" data-tab="stats">統計</button>
+      <button class="tab-btn" data-tab="settings">設定</button>
+    </nav>
+
+    <!-- 今日のToDo -->
+    <section class="tab-content active" id="tab-today">
+      <div class="section-header">
+        <h2>今日やるべき理論</h2>
+        <div class="today-summary" id="todaySummary"></div>
+      </div>
+      <div class="filter-bar">
+        <select id="filterImportance">
+          <option value="all">全重要度</option>
+          <option value="★★">★★ 最重要</option>
+          <option value="★">★ 重要</option>
+          <option value="none">マークなし</option>
+        </select>
+        <select id="filterChapter">
+          <option value="all">全章</option>
+        </select>
+      </div>
+      <div id="todayList" class="theory-list"></div>
+    </section>
+
+    <!-- やばいリスト -->
+    <section class="tab-content" id="tab-danger">
+      <div class="section-header">
+        <h2>危険度ランキング</h2>
+        <p class="subtitle">期限超過 × 評価 × 重要度で算出</p>
+      </div>
+      <div id="dangerList" class="theory-list"></div>
+    </section>
+
+    <!-- 全理論一覧 -->
+    <section class="tab-content" id="tab-all">
+      <div class="section-header">
+        <h2>全理論一覧</h2>
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="理論名・キーワードで検索...">
+        </div>
+      </div>
+      <div class="filter-bar">
+        <select id="allFilterChapter">
+          <option value="all">全章</option>
+        </select>
+        <select id="allFilterStatus">
+          <option value="all">全ステータス</option>
+          <option value="overdue">期限超過</option>
+          <option value="today">今日</option>
+          <option value="upcoming">明日以降</option>
+          <option value="new">未学習</option>
+        </select>
+      </div>
+      <div id="allList" class="theory-list"></div>
+    </section>
+
+    <!-- 統計 -->
+    <section class="tab-content" id="tab-stats">
+      <div class="section-header">
+        <h2>学習統計</h2>
+      </div>
+      <div id="statsContent" class="stats-grid"></div>
+    </section>
+
+    <!-- 設定 -->
+    <section class="tab-content" id="tab-settings">
+      <div class="section-header">
+        <h2>設定</h2>
+      </div>
+      <div class="settings-form">
+        <div class="setting-group">
+          <label>試験日</label>
+          <input type="date" id="examDate" value="2026-08-04">
+        </div>
+        <div class="setting-group">
+          <label>直前期モード</label>
+          <div class="toggle-wrap">
+            <input type="checkbox" id="preExamMode">
+            <label for="preExamMode" class="toggle-label">
+              <span class="toggle-text">OFF</span>
+            </label>
+          </div>
+          <p class="setting-desc">ONにすると重要度に応じて復習間隔の上限が制限されます（A:7日, B:14日, C:30日）</p>
+        </div>
+        <div class="setting-group">
+          <label>回転数目標（試験日まで）</label>
+          <div class="rotation-targets">
+            <div><span class="importance-badge importance-a">★★</span><input type="number" id="targetA" value="3" min="1" max="10">回</div>
+            <div><span class="importance-badge importance-b">★</span><input type="number" id="targetB" value="2" min="1" max="10">回</div>
+            <div><span class="importance-badge importance-c">−</span><input type="number" id="targetC" value="1" min="1" max="10">回</div>
+          </div>
+        </div>
+        <div class="setting-group">
+          <h3>データ管理</h3>
+          <button class="btn btn-secondary" id="exportBtn">データをエクスポート</button>
+          <button class="btn btn-secondary" id="importBtn">データをインポート</button>
+          <input type="file" id="importFile" accept=".json" style="display:none">
+          <button class="btn btn-danger" id="resetBtn">全データをリセット</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 理論詳細モーダル -->
+    <div class="modal-overlay" id="theoryModal">
+      <div class="modal-content">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <div id="modalBody"></div>
+      </div>
+    </div>
+
+    <!-- 復習評価モーダル -->
+    <div class="modal-overlay" id="reviewModal">
+      <div class="modal-content review-modal">
+        <button class="modal-close" id="reviewModalClose">&times;</button>
+        <div id="reviewModalBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="theory_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
